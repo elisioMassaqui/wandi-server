@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Robotic Arm Simulator</title>
+  <style>
+    #editor { width: 50%; height: 100vh; float: left; }
+    #viewer { width: 50%; height: 100vh; float: right; }
+  </style>
+</head>
+<body>
+  <div id="editor"></div>
+  <div id="viewer"></div>
+  <button id="upload">Upload Code</button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.21.2/min/vs/loader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // Monaco Editor Setup
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.21.2/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+      const editor = monaco.editor.create(document.getElementById('editor'), {
+        value: [
+          'void setup() {',
+          '  // put your setup code here, to run once:',
+          '}',
+          '',
+          'void loop() {',
+          '  // put your main code here, to run repeatedly:',
+          '}'
+        ].join('\n'),
+        language: 'cpp'
+      });
+
+      document.getElementById('upload').onclick = () => {
+        const code = editor.getValue();
+        fetch('/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code })
+        })
+        .then(response => response.text())
+        .then(data => alert(data));
+      };
+    });
+
+    // Three.js Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth / 2, window.innerHeight);
+    document.getElementById('viewer').appendChild(renderer.domElement);
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

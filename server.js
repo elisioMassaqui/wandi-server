@@ -15,11 +15,15 @@ var sketchPath = 'C:\\Users\\Administrador\\Documents\\Causa-Efeito, SINER\\Wand
 
 //Checar versão
 const arduinoVersion = 'arduino-cli version';
-//Atualizar.
+//Configurar Arduino CLI:
+const init = 'arduino-cli config init';
+//Atualizar índice de pacotes
 const arduinoAtualizar = 'arduino-cli core update-index';
-//Instalar familia avr
+//Instalar o pacote para placas Arduino AVR:
 const arduinoAVR = 'arduino-cli core install arduino:avr';
 //plcas de dispositivos conectados ao PC.
+
+
 const placasDisponiveis = 'arduino-cli board list'
 //Todas placas.
 const todasplacas = 'arduino-cli board listall'
@@ -29,6 +33,9 @@ const arduinoCore = 'arduino-cli core search';
 const compilarCode = `arduino-cli compile --fqbn "${uno}" -p "${porta}" "${sketchPath}" ${verbose}`;
 //Enviar codigos pra placa.
 const enviarCode = `arduino-cli upload --fqbn "${uno}" -p "${porta}" "${sketchPath}" ${verbose}`;
+
+//Para verificar o local do arquivo de configuração que o Arduino CLI está usando, você pode executar
+const verificarLocal = 'arduino-cli config dump';
 
 var executeComando = arduinoAtualizar;
 

@@ -1,52 +1,35 @@
-const { exec, execSync } = require('child_process');
+// server.js
+const WebSocket = require('ws');
+const { exec } = require('child_process');
 
-//Relevantes
-//Habilitar a saída verbose produzirá informações mais detalhadas no console .
-const verbose = '-v';
-//Armazenar porta detectada, e selecionar e conectar a primeira porta detectada.
-var porta = 'COM19';
-//Familia arduino, aqui tá tudo bem vou usar arduino uno apenas.
-var uno = 'arduino:avr:uno';
+const wss = new WebSocket.Server({ port: 8080 });
 
-// Defina o caminho do sketch aqui
-var sketchPath = 'C:\\Users\\Administrador\\Documents\\Causa-Efeito, SINER\\Wandi Robot\\mundo';
+wss.on('connection', (ws) => {
+  console.log('Client connected');
 
-// Comando para o arduino-cli
+  ws.on('message', (message) => {
+    const command = message.toString(); // Converte o Buffer para string
+    console.log(`Received: ${command}`);
+    
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        ws.send(`Error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        ws.send(`Stderr: ${stderr}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      ws.send(`Output: ${stdout}`);
+    });
+  });
 
-//Checar versão
-const arduinoVersion = 'arduino-cli version';
-//Configurar Arduino CLI:
-const init = 'arduino-cli config init';
-//Atualizar índice de pacotes
-const arduinoAtualizar = 'arduino-cli core update-index';
-//Instalar o pacote para placas Arduino AVR:
-const arduinoAVR = 'arduino-cli core install arduino:avr';
-//plcas de dispositivos conectados ao PC.
-
-
-const placasDisponiveis = 'arduino-cli board list'
-//Todas placas.
-const todasplacas = 'arduino-cli board listall'
-//Olhar todos tipos de placa suportada.
-const arduinoCore = 'arduino-cli core search';
-//Compilar codigos.
-const compilarCode = `arduino-cli compile --fqbn "${uno}" -p "${porta}" "${sketchPath}" ${verbose}`;
-//Enviar codigos pra placa.
-const enviarCode = `arduino-cli upload --fqbn "${uno}" -p "${porta}" "${sketchPath}" ${verbose}`;
-
-//Para verificar o local do arquivo de configuração que o Arduino CLI está usando, você pode executar
-const verificarLocal = 'arduino-cli config dump';
-
-var executeComando = arduinoAtualizar;
-
-// Executa o comando
-exec(executeComando, (error, stdout, stderr) => {
-  if (error) {
-    console.error(`Erro:\n ${error.message}`);
-    return;
-  }
-  if (stderr) {
-    console.error(`stderr info:\n ${stderr}`);
-  }
-  console.log(`Saída:\n  ${stdout}`);
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
 });
+
+console.log('WebSocket server is running on ws://localhost:8080');

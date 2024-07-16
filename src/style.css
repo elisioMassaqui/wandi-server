@@ -20,3 +20,10 @@ html, body{
     text-align: start;
 
 }
+
+.arduino-cli{
+    padding: 10px;
+    background-color: rgb(119, 0, 255);
+    color: black;
+    border-radius: 5px;
+}

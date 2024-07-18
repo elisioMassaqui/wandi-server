@@ -1,20 +1,35 @@
-const { spawn } = require('child_process');
+const { exec } = require('child_process');
 
-function monitorArduino() {
-    const child = spawn('arduino-cli', ['board', 'list']);
+function detectConnectedBoards() {
+    exec('arduino-cli board list', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Erro ao executar o comando: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.error(`Erro no stderr: ${stderr}`);
+            return;
+        }
+        
+        // Processar a saída para detectar placas Arduino Uno conectadas
+        const connectedBoardsText = parseConnectedBoards(stdout);
+        console.log('Placas Arduino Uno conectadas:\n', connectedBoardsText);
 
-    child.stdout.on('data', (data) => {
-        console.log(`Arduino boards connected:\n${data}`);
-    });
-
-    child.stderr.on('data', (data) => {
-        console.error(`Error occurred: ${data}`);
-    });
-
-    child.on('close', (code) => {
-        console.log(`Child process exited with code ${code}. Restarting...`);
-        setTimeout(monitorArduino, 500); // Reiniciar após 2 segundos
+        // Agendar a próxima verificação (aqui a cada 5 segundos, ajuste conforme necessário)
+        setTimeout(detectConnectedBoards, 5000);
     });
 }
 
-monitorArduino();
+function parseConnectedBoards(output) {
+    // Exemplo de parsing da saída para encontrar placas Arduino Uno conectadas
+    const lines = output.split('\n');
+    const connectedBoardsText = lines.filter(line => line.includes('Arduino Uno')).map(line => {
+        const parts = line.split(/\s+/);
+        const port = parts[0];
+        return `${port} - Arduino Uno`;
+    }).join('\n');
+    return connectedBoardsText;
+}
+
+// Iniciar a detecção de placas Arduino Uno
+detectConnectedBoards();

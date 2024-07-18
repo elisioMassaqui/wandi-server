@@ -12,25 +12,23 @@ function detectConnectedBoards() {
         }
         
         // Processar a saída para detectar placas Arduino Uno conectadas
-        const connectedBoards = parseConnectedBoards(stdout);
-        console.log('Placas Arduino Uno conectadas:', connectedBoards);
+        const connectedBoardsText = parseConnectedBoards(stdout);
+        console.log('Placas Arduino Disponível:\n', connectedBoardsText);
 
         // Agendar a próxima verificação (aqui a cada 5 segundos, ajuste conforme necessário)
-        setTimeout(detectConnectedBoards, 5000);
+        setTimeout(detectConnectedBoards, 500);
     });
 }
 
 function parseConnectedBoards(output) {
     // Exemplo de parsing da saída para encontrar placas Arduino Uno conectadas
     const lines = output.split('\n');
-    const connectedBoards = lines.filter(line => line.includes('Arduino Uno')).map(line => {
+    const connectedBoardsText = lines.filter(line => line.includes('Arduino Uno')).map(line => {
         const parts = line.split(/\s+/);
-        return {
-            port: parts[0],
-            board: parts[1]
-        };
-    });
-    return connectedBoards;
+        const port = parts[0];
+        return `${port} - Arduino Uno`;
+    }).join('\n');
+    return connectedBoardsText;
 }
 
 // Iniciar a detecção de placas Arduino Uno

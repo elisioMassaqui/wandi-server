@@ -11,8 +11,8 @@ html, body{
 }
 
 .console{
-    width: 700px;
-    height: 400px;
+    width: 400px;
+    height: 200px;
     background-color: rgb(27, 27, 27);
     color: aliceblue;
     font-family: Arial, Helvetica, sans-serif;
@@ -26,4 +26,13 @@ html, body{
     background-color: rgb(119, 0, 255);
     color: black;
     border-radius: 5px;
+}
+
+.placa{
+    width: 650px;
+    height: 80px;
+    background-color: rgb(42, 74, 255);
+    color: rgb(255, 255, 255);
+    overflow: auto;
+    text-align: start;
 }

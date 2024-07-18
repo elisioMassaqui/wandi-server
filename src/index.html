@@ -10,7 +10,11 @@
 
 <body>
     <div class="main">
-        <button class="arduino-cli" id="execute-btn">Arduino-cli</button>
+        <button class="arduino-cli" id="execute-btn">Listar Placas Arduino</button>
+        <div class="placa">
+            <label for="board-select">Selecione uma placa:</label>
+            <select id="board-select"></select>
+        </div>
         <div class="console"></div>
     </div>
     <script src="renderer.js"></script>

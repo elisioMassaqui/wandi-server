@@ -1,3 +1,4 @@
+// src/main.js
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
@@ -6,13 +7,27 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: true // Permite a integração com Node.js
+            preload: path.join(__dirname, 'placa.js'),
+            nodeIntegration: true, // Habilita Node.js no processo de renderização
+            contextIsolation: false, // Permite usar Node.js diretamente no frontend
         }
     });
 
-    // Carrega o arquivo index.html da aplicação
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
 }
 
-// Evento de quando o Electron termina o carregamento e está pronto para criar janelas do navegador
-app.on('ready', createWindow);
+app.whenReady().then(() => {
+    createWindow();
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});

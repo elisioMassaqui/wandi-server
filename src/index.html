@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Console</title>
 </head>
+
 <body>
     <div class="main">
-        <button id="list-btn">Listar Placas Arduino</button>
-        <div class="placa"></div>
-        <div id="arduino-data"></div>
+        <button class="arduino-cli" id="execute-btn">Listar Placas Arduino</button>
+        <div class="placa">
+            <p id="board-display">Aguardando detecção de placa...</p>
+        </div>
+        <div class="console"></div>
     </div>
     <script src="placa.js"></script>
 </body>
+
 </html>

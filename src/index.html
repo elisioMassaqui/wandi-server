@@ -7,9 +7,14 @@
     <title>Console</title>
 </head>
 <body>
-
-    <div class="placa"></div>
-
+    <div class="main">
+        <button id="list-btn">Listar Placas Arduino</button>
+        <div class="placa">
+            <label for="board-select">Selecione uma placa:</label>
+            <select id="board-select"></select>
+        </div>
+        <div id="connected-board"></div> <!-- Elemento para exibir a placa conectada -->
+    </div>
     <script src="renderer.js"></script>
 </body>
 </html>
